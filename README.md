@@ -1,6 +1,6 @@
 # **GazaShell**
 
-A simple implementation of a Unix-like shell in C++.
+A Bugy implementation of a Unix-like shell in C++.
 
 ---
 
