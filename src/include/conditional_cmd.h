@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include "pipe.h"
+// #include "pipe.h"
 
 #define MAX_CMD 32
 
@@ -13,7 +13,7 @@ struct conditional_cmd
     struct pipeline *pipes[MAX_CMD];
 };
 
-void init_pipeline(struct conditional_cmd *c);
+void init_ccmd(struct conditional_cmd *c);
 
 void set_background(struct conditional_cmd *c, int bg);
 

@@ -6,6 +6,7 @@
 #include "scanner.h"
 #include "command.h"
 #include "pipe.h"
+#include "conditional_cmd.h"
 
 char *read_line()
 {
@@ -51,10 +52,19 @@ int main(int argc, char *argv)
     insert_command(&p, &cmd2);
     insert_command(&p, &cmd3);
     insert_command(&p, &cmd4);
-    printf("%d\n", p.comno);
-    print_pipeline(&p);
-    execute_pipeline(&p);
-    free_pipeline(&p);
+    set_state(&p, 1);
+    // just continue if the last command fails
+    struct conditional_cmd cc;
+    init_ccmd(&cc);
+    insert_pipeline(&cc, &p);
+    set_background(&cc, 1);
+    print_conditional_cmd(&cc);
+    execute_conditional_cmd(&cc);
+    free_conditional_cmd(&cc);
+    // printf("%d\n", p.comno);
+    // print_pipeline(&p);
+    // execute_pipeline(&p);
+    // free_pipeline(&p);
     // struct pipeline
 
     // execute_command(&cmd);

@@ -5,6 +5,11 @@
 
 #define MAX_PIPE 32
 
+/*
+    state:
+    0 : continue only if the this pipeline succeeds
+    1 : continue only if the this pipeline fails
+*/
 struct pipeline
 {
     int comno;
