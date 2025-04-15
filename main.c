@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include "symbols.h"
+#include "scanner.h"
+#include "command.h"
+#include "pipe.h"
+
+char *read_line()
+{
+    char *buffer = NULL;
+    size_t len = 0;
+    ssize_t read;
+    read = getline(&buffer, &len, stdin);
+    if (read == -1)
+    {
+        perror("getline");
+        return NULL;
+    }
+    return buffer;
+}
+
+int main(int argc, char *argv)
+{
+    // char *source = read_line();
+    // struct tokens *t = scanner(source);
+    // print_tokens(t);
+    // free_tokens(t);
+    // free(source);
+    struct command cmd;
+    init_command(&cmd);
+    insert_arg(&cmd, "cat");
+    insert_arg(&cmd, "../input.txt");
+    struct command cmd2;
+    init_command(&cmd2);
+    insert_arg(&cmd2, "grep");
+    insert_arg(&cmd2, "a");
+    struct command cmd3;
+    init_command(&cmd3);
+    insert_arg(&cmd3, "grep");
+    insert_arg(&cmd3, "c");
+    struct command cmd4;
+    init_command(&cmd4);
+    insert_arg(&cmd4, "grep");
+    insert_arg(&cmd4, "d");
+    set_output(&cmd4, "../output.txt");
+    struct pipeline p;
+    init_pipline(&p);
+    insert_command(&p, &cmd);
+    insert_command(&p, &cmd2);
+    insert_command(&p, &cmd3);
+    insert_command(&p, &cmd4);
+    printf("%d\n", p.comno);
+    print_pipeline(&p);
+    execute_pipeline(&p);
+    free_pipeline(&p);
+    // struct pipeline
+
+    // execute_command(&cmd);
+    // print_command(&cmd);
+    // free_command(&cmd);
+}
