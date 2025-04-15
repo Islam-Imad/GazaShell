@@ -55,45 +55,7 @@ int execute_conditional_cmd(struct conditional_cmd *c)
 {
     for (int i = 0; i < c->pipno; i++)
     {
-        if (execute_pipeline(c->pipes[i]) == -1)
-        {
-            // fprintf(stderr, "Error executing pipeline %d\n", i);
-            // return -1;
-            if (c->pipes[i]->state == 0)
-            {
-                // continue only if the pipeline fails
-                return -1;
-            }
-            else if (c->pipes[i]->state == 1)
-            {
-                // continue only if the pipeline succeeds
-                continue;
-            }
-            else
-            {
-                fprintf(stderr, "Error: Invalid pipeline state.\n");
-                return -1;
-            }
-        }
-        else
-        {
-            // fprintf(stderr, "Pipeline %d executed successfully\n", i);
-            if (c->pipes[i]->state == 1)
-            {
-                // continue only if the pipeline fails
-                return -1;
-            }
-            else if (c->pipes[i]->state == 0)
-            {
-                // continue only if the pipeline succeeds
-                continue;
-            }
-            else
-            {
-                fprintf(stderr, "Error: Invalid pipeline state.\n");
-                return -1;
-            }
-        }
+        execute_pipeline(c->pipes[i]);
     }
     return 0;
 }
