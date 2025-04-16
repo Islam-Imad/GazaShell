@@ -3,17 +3,20 @@
 #include <string.h>
 #include <unistd.h>
 #include "parser.h"
-// #include "builtin.h"
+#include "builtin.h"
+#include "path.h"
 
 char *read_line(FILE *file)
 {
+    if (feof(file))
+        return NULL;
     char *buffer = NULL;
     size_t len = 0;
     ssize_t read;
     read = getline(&buffer, &len, file);
     if (read == -1)
     {
-        perror("getline");
+        // perror("getline");
         return NULL;
     }
     return buffer;
@@ -21,33 +24,41 @@ char *read_line(FILE *file)
 
 int batch_mode(char *path)
 {
+    if (path == NULL || strlen(path) == 0)
+    {
+        error_message();
+        exit(1);
+    }
     FILE *file = fopen(path, "r");
     if (file == NULL)
     {
-        perror("fopen");
-        return -1;
+        error_message();
+        exit(1);
     }
+    struct path p;
+    insert_path(&p, "/bin");
+    insert_path(&p, "/usr/bin");
     int status = 0;
-    char *line = read_line(file);
-    struct tokens *t = scanner(line);
-    struct list *l = parser(t);
-    execute_list(l);
-    while (line != NULL)
+    char *line = NULL;
+    struct tokens *t;
+    struct list *l;
+    int occ = 0;
+    while ((line = read_line(file)) != NULL)
     {
-        free(line);
-        line = read_line(file);
-        if (line == NULL)
-            break;
+        occ++;
         t = scanner(line);
         l = parser(t);
-        if (execute_list(l) != 0)
+        if (execute_list(l, &p) != 0)
         {
-            status = -1;
+            status = 1;
         }
         free_list(l);
-        free_tokens(t);
+        free(line);
     }
-    free(line);
+    if (occ == 0)
+    {
+        error_message();
+    }
     fclose(file);
     return status;
 }
@@ -57,6 +68,9 @@ int command_line_mood()
     char *line = NULL;
     size_t len = 0;
     ssize_t read;
+    struct path p;
+    insert_path(&p, "/bin");
+    insert_path(&p, "/usr/bin");
     while (1)
     {
         printf("Wish> ");
@@ -68,88 +82,17 @@ int command_line_mood()
         }
         struct tokens *t = scanner(line);
         struct list *l = parser(t);
-        // print_list(l);
-        execute_list(l);
+        execute_list(l, &p);
         free_list(l);
-        free_tokens(t);
+        free(t);
     }
+    print_path(&p);
     free(line);
     return 0;
 }
 
-void test_1()
-{
-    struct command cmd;
-    init_command(&cmd);
-    insert_arg(&cmd, "cat");
-    insert_arg(&cmd, "../input.txt");
-    struct command cmd2;
-    init_command(&cmd2);
-    insert_arg(&cmd2, "grep");
-    insert_arg(&cmd2, "a");
-    struct command cmd3;
-    init_command(&cmd3);
-    insert_arg(&cmd3, "grep");
-    insert_arg(&cmd3, "c");
-    struct command cmd4;
-    init_command(&cmd4);
-    insert_arg(&cmd4, "grep");
-    insert_arg(&cmd4, "d");
-    set_output(&cmd4, "../output.txt");
-    struct pipeline p;
-    init_pipline(&p);
-    insert_command(&p, &cmd);
-    insert_command(&p, &cmd2);
-    insert_command(&p, &cmd3);
-    insert_command(&p, &cmd4);
-    set_state(&p, 1);
-    // just continue if the last command fails
-    struct conditional_cmd cc;
-    init_ccmd(&cc);
-    insert_pipeline(&cc, &p);
-    set_background(&cc, 1);
-    print_conditional_cmd(&cc);
-    execute_conditional_cmd(&cc);
-    free_conditional_cmd(&cc);
-}
-
-void test_2()
-{
-    struct command cmd;
-    init_command(&cmd);
-    insert_arg(&cmd, "cat");
-    insert_arg(&cmd, "../input.txt");
-    struct command cmd2;
-    init_command(&cmd2);
-    insert_arg(&cmd2, "ls");
-    struct pipeline p;
-    init_pipline(&p);
-    insert_command(&p, &cmd);
-    set_state(&p, 1);
-    struct pipeline p2;
-    init_pipline(&p2);
-    insert_command(&p2, &cmd2);
-    set_state(&p2, 0);
-    // just continue if the last command fails
-    struct conditional_cmd cc;
-    init_ccmd(&cc);
-    insert_pipeline(&cc, &p);
-    insert_pipeline(&cc, &p2);
-    set_background(&cc, 1);
-    print_conditional_cmd(&cc);
-    execute_conditional_cmd(&cc);
-    free_conditional_cmd(&cc);
-}
-
 int main(int argc, char *argv[])
 {
-    // struct tokens *t = scanner(read_line());
-    // print_tokens(t);
-    // struct list *l = parser(t);
-    // print_list(l);
-    // execute_list(l);
-    // free_list(l);
-    // free_tokens(t);
     if (argc == 1)
     {
         command_line_mood();
@@ -160,8 +103,8 @@ int main(int argc, char *argv[])
     }
     else
     {
-        // error_message();
-        return -1;
+        error_message();
+        exit(EXIT_FAILURE);
     }
     return 0;
 }

@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include "command.h"
 #include "pipe.h"
+#include "builtin.h"
 
 void init_pipline(struct pipeline *p)
 {
@@ -55,7 +56,7 @@ void print_pipeline(struct pipeline *p)
     printf("\n");
 }
 
-int execute_pipeline(struct pipeline *p)
+int execute_pipeline(struct pipeline *p,struct path *p1)
 {
     if (p == NULL)
     {
@@ -94,11 +95,18 @@ int execute_pipeline(struct pipeline *p)
             if (p->cmd[i]->output != NULL)
             {
                 close(fd2[1]);
-                fd2[1] = open(p->cmd[i]->output, O_WRONLY | O_CREAT, 0644);
-                if (fd2[1] == -1)
+                if (strcmp(p->cmd[i]->output, "-1") == 0)
                 {
-                    perror("opening a file to write");
-                    exit(EXIT_FAILURE);
+                    error_message();
+                    gst = -1;
+                    break;
+                }
+                fd2[1] = open(p->cmd[i]->output, O_WRONLY | O_CREAT, 0644);
+                if (fd2[1] < -1)
+                {
+                    error_message();
+                    gst = -1;
+                    break;
                 }
                 dup2(fd2[1], STDOUT_FILENO);
             }
@@ -112,7 +120,7 @@ int execute_pipeline(struct pipeline *p)
             dup2(fd2[1], STDOUT_FILENO);
         }
         // don't expect me to write again (close output - write end)
-        int st = execute_command(p->cmd[i]);
+        int st = execute_command(p->cmd[i], p1);
         if (st != 0)
         {
             gst = -1;

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include "path.h"
 // #include "pipe.h"
 
 #ifndef CONDITIONAL_CMD_H
@@ -26,6 +27,6 @@ void free_conditional_cmd(struct conditional_cmd *c);
 
 void print_conditional_cmd(struct conditional_cmd *c);
 
-int execute_conditional_cmd(struct conditional_cmd *c);
+int execute_conditional_cmd(struct conditional_cmd *c, struct path *p);
 
 #endif // CONDITIONAL_CMD_H

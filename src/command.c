@@ -6,6 +6,7 @@
 #include <sys/wait.h>
 #include "command.h"
 #include "builtin.h"
+#include "path.h"
 
 void init_command(struct command *cmd)
 {
@@ -63,16 +64,26 @@ void free_command(struct command *cmd)
     }
 }
 
-int execute_command(struct command *cmd)
+int execute_command(struct command *cmd, struct path *p)
 {
-    if (cmd == NULL || cmd->argno == 0)
+    if (cmd == NULL)
     {
+        return 0;
+    }
+    if (cmd->argno == 0)
+    {
+        if (cmd->output != NULL || cmd->input != NULL || cmd->error != NULL)
+        {
+            error_message();
+            return -1;
+        }
         return 0;
     }
     // you should create pipe here to know if your child process failed or not
     if (check_builtin(cmd))
     {
-        return excute_builtin(cmd);
+        excute_builtin(cmd, p);
+        return 0;
     }
     pid_t pid = fork();
     if (pid == -1)
@@ -82,8 +93,16 @@ int execute_command(struct command *cmd)
     }
     if (pid == 0)
     {
-        execvp(cmd->args[0], cmd->args);
-        fprintf(stderr, "Error: Command execution failed\n");
+        char *path = get_path(p, cmd->args[0]);
+        if (path != NULL)
+        {
+            execv(path, cmd->args);
+        }
+        error_message();
+        // printf("Command not found: %s\n", cmd->args[0]);
+        // // print the env path
+        // printf("%s\n", getenv("PATH"));
+        exit(EXIT_FAILURE);
     }
     else
     {

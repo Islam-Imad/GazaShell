@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include "path.h"
 
 #ifndef COMMAND_H
 #define COMMAND_H
@@ -29,7 +30,7 @@ void insert_arg(struct command *cmd, char *arg);
 
 void free_command(struct command *cmd);
 
-int execute_command(struct command *cmd);
+int execute_command(struct command *cmd, struct path *p);
 
 void print_command(struct command *cmd);
 

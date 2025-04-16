@@ -18,8 +18,27 @@ void error_message()
     write(STDERR_FILENO, error_message, strlen(error_message));
 }
 
-int execute_pwd()
+int is_file(char *path)
 {
+    int idx = 0;
+    while (path[idx] != '\0')
+    {
+        if (path[idx] == '.')
+        {
+            return 1;
+        }
+        idx++;
+    }
+    return 0;
+}
+
+int execute_pwd(struct command *cmd)
+{
+    if (cmd->argno != 1)
+    {
+        error_message();
+        return -1;
+    }
     char *path = getcwd(NULL, 0);
     if (path == NULL)
     {
@@ -30,9 +49,14 @@ int execute_pwd()
     free(path);
 }
 
-int execute_cd(char *path)
+int execute_cd(struct command *cmd)
 {
-    if (chdir(path) != 0)
+    if (cmd->argno != 2)
+    {
+        error_message();
+        return -1;
+    }
+    if (chdir(cmd->args[1]) != 0)
     {
         error_message();
         return -1;
@@ -40,16 +64,35 @@ int execute_cd(char *path)
     return 0;
 }
 
-int excute_exit()
+void excute_exit(struct command *cmd)
 {
+    if (cmd->argno != 1)
+    {
+        error_message();
+        return;
+    }
     exit(EXIT_SUCCESS);
+}
+
+int execute_help(struct command *cmd)
+{
+    if (cmd->argno != 1)
+    {
+        error_message();
+        return -1;
+    }
+    char help_message[100] = "This is a simple shell program.\n";
+    write(STDOUT_FILENO, help_message, strlen(help_message));
     return 0;
 }
 
-int execute_help()
+int execute_path(struct command *cmd, struct path *p)
 {
-    char help_message[100] = "This is a simple shell program.\n";
-    write(STDOUT_FILENO, help_message, strlen(help_message));
+    clear_path(p);
+    for (int i = 1; i < cmd->argno; ++i)
+    {
+        insert_path(p, cmd->args[i]);
+    }
     return 0;
 }
 
@@ -65,23 +108,30 @@ int check_builtin(struct command *cmd)
     return 0;
 }
 
-int excute_builtin(struct command *cmd)
+void excute_builtin(struct command *cmd, struct path *p)
 {
     if (strcmp(cmd->args[0], "cd") == 0)
     {
-        return execute_cd(cmd->args[1]);
+        execute_cd(cmd);
     }
     else if (strcmp(cmd->args[0], "exit") == 0)
     {
-        return excute_exit();
+        excute_exit(cmd);
     }
     else if (strcmp(cmd->args[0], "help") == 0)
     {
-        return execute_help();
+        execute_help(cmd);
     }
     else if (strcmp(cmd->args[0], "pwd") == 0)
     {
-        return execute_pwd();
+        execute_pwd(cmd);
     }
-    return -1;
+    else if (strcmp(cmd->args[0], "path") == 0)
+    {
+        execute_path(cmd, p);
+    }
+    else
+    {
+        error_message();
+    }
 }

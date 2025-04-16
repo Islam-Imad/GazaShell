@@ -66,7 +66,7 @@ void print_conditional_cmd(struct conditional_cmd *c)
     printf("Background: %s\n", c->background ? "Yes" : "No");
 }
 
-int execute_conditional_cmd(struct conditional_cmd *c)
+int execute_conditional_cmd(struct conditional_cmd *c,struct path *p)
 {
     if (c == NULL)
     {
@@ -75,7 +75,7 @@ int execute_conditional_cmd(struct conditional_cmd *c)
     int status = 0;
     for (int i = 0; i < c->pipno; i++)
     {
-        int cstatus = execute_pipeline(c->pipes[i]);
+        int cstatus = execute_pipeline(c->pipes[i], p);
         status = cstatus;
         if (cstatus == 0)
         {

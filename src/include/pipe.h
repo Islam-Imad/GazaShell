@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include "path.h"
 
 #ifndef PIPE_H
 #define PIPE_H
@@ -30,6 +31,6 @@ void free_pipeline(struct pipeline *p);
 
 void print_pipeline(struct pipeline *p);
 
-int execute_pipeline(struct pipeline *p);
+int execute_pipeline(struct pipeline *p, struct path *p1);
 
 #endif // PIPE_H

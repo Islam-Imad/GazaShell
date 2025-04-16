@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "parser.h"
+#include "builtin.h"
 
 int match(char *cmp_a, char *cmp_b)
 {
@@ -64,6 +65,10 @@ struct list *parser(struct tokens *t)
         }
         idx += 1;
         insert_ccmd(l, parse_conditional_cmd(t, &idx));
+    }
+    if (l->ccmdno > 1)
+    {
+        l->ccmds[l->ccmdno - 1]->background = 1;
     }
     return l;
 }
@@ -134,20 +139,58 @@ struct command *parse_command(struct tokens *t, int *idx)
 
 void parse_io(struct tokens *t, int *idx, struct command *cmd)
 {
-    if (*idx < t->count && is_io(t->tk[*idx]))
+    while (*idx < t->count && is_io(t->tk[*idx]))
     {
         if (match(t->tk[*idx], ">"))
         {
-            cmd->output = t->tk[*idx + 1];
+            *(idx) += 1;
+            int cnt = 0;
+            while (*idx < t->count && is_special(t->tk[*idx]) == 0)
+            {
+                if (cmd->output != NULL)
+                {
+                    cnt = 2;
+                }
+                cmd->output = t->tk[*idx];
+                cnt += 1;
+                *(idx) += 1;
+            }
+            if (cnt != 1)
+                cmd->output = strdup("-1");
         }
         else if (match(t->tk[*idx], "<"))
         {
-            cmd->input = t->tk[*idx + 1];
+            *(idx) += 1;
+            int cnt = 0;
+            while (*idx < t->count && is_special(t->tk[*idx]) == 0)
+            {
+                if (cmd->input != NULL)
+                {
+                    cnt = 2;
+                }
+                cmd->input = t->tk[*idx];
+                cnt += 1;
+                *(idx) += 1;
+            }
+            if (cnt != 1 || cmd->input != NULL)
+                cmd->input = strdup("-1");
         }
-        else
+        else if (match(t->tk[*idx], "2>"))
         {
-            cmd->error = t->tk[*idx + 1];
+            *(idx) += 1;
+            int cnt = 0;
+            while (*idx < t->count && is_special(t->tk[*idx]) == 0)
+            {
+                if (cmd->error != NULL)
+                {
+                    cnt = 2;
+                }
+                cmd->error = t->tk[*idx];
+                cnt += 1;
+                *(idx) += 1;
+            }
+            if (cnt != 1 || cmd->error != NULL)
+                cmd->error = strdup("-1");
         }
-        *(idx) += 2;
     }
 }

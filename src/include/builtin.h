@@ -6,16 +6,20 @@
 
 void error_message();
 
-int execute_pwd();
+int is_file(char *path);
 
-int execute_cd(char *path);
+int execute_pwd(struct command *cmd);
 
-int excute_exit();
+int execute_cd(struct command *cmd);
 
-int execute_help();
+void excute_exit(struct command *cmd);
+
+int execute_help(struct command *cmd);
+
+int execute_path(struct command *cmd, struct path *p);
 
 int check_builtin(struct command *cmd);
 
-int excute_builtin(struct command *cmd);
+void excute_builtin(struct command *cmd, struct path *p);
 
 #endif // BUILTIN_H

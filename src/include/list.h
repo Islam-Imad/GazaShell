@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include "path.h"
 
 #ifndef LIST_H
 #define LIST_H
@@ -22,8 +23,8 @@ void free_list(struct list *l);
 
 void print_list(struct list *l);
 
-int parallel_execute(struct conditional_cmd *c);
+int parallel_execute(struct conditional_cmd *c, struct path *p);
 
-int execute_list(struct list *l);
+int execute_list(struct list *l, struct path *p);
 
 #endif

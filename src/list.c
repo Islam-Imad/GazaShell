@@ -3,7 +3,8 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
-
+#include <sys/wait.h>
+#include "path.h"
 #include "list.h"
 #include "conditional_cmd.h"
 
@@ -52,7 +53,7 @@ void print_list(struct list *l)
 }
 
 // still we need to know the status of the conditional command
-int parallel_execute(struct conditional_cmd *c)
+int parallel_execute(struct conditional_cmd *c, struct path *p)
 {
     if (c == NULL)
     {
@@ -69,7 +70,7 @@ int parallel_execute(struct conditional_cmd *c)
         // Child process
         // sleep(1);
         // printf("Executing command in background: ");
-        execute_conditional_cmd(c);
+        execute_conditional_cmd(c, p);
         exit(0);
     }
     else
@@ -80,7 +81,7 @@ int parallel_execute(struct conditional_cmd *c)
     return 0;
 }
 
-int execute_list(struct list *l)
+int execute_list(struct list *l, struct path *p)
 {
     if (l == NULL)
     {
@@ -95,11 +96,11 @@ int execute_list(struct list *l)
             continue;
         if (l->ccmds[i]->background == 1)
         {
-            parallel_execute(l->ccmds[i]);
+            parallel_execute(l->ccmds[i], p);
         }
         else
         {
-            int cstatus = execute_conditional_cmd(l->ccmds[i]);
+            int cstatus = execute_conditional_cmd(l->ccmds[i], p);
             if (cstatus != 0)
             {
                 status = -1;
@@ -107,5 +108,8 @@ int execute_list(struct list *l)
         }
         // break;
     }
+    int st;
+    while (wait(&st) > 0)
+        ; // Waits for *any* child until none left
     return status;
 }
