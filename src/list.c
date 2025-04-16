@@ -34,15 +34,20 @@ void free_list(struct list *l)
     for (int i = 0; i < l->ccmdno; i++)
     {
         free_conditional_cmd(l->ccmds[i]);
+        free(l->ccmds[i]);
+        l->ccmds[i] = NULL;
     }
 }
 
 void print_list(struct list *l)
 {
-    printf("List of Conditional Commands:\n");
+    printf("List of Conditional Commands: %d :\n", l->ccmdno);
+    printf("-----------------------------------------------\n");
     for (int i = 0; i < l->ccmdno; i++)
     {
+        // printf("Conditional Command %d:\n", i + 1);
         print_conditional_cmd(l->ccmds[i]);
+        printf("-----------------------------------------------\n");
     }
 }
 

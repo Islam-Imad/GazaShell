@@ -38,15 +38,30 @@ void free_conditional_cmd(struct conditional_cmd *c)
     for (int i = 0; i < c->pipno; i++)
     {
         free_pipeline(c->pipes[i]);
+        free(c->pipes[i]);
+        c->pipes[i] = NULL;
     }
 }
 
 void print_conditional_cmd(struct conditional_cmd *c)
 {
-    printf("Conditional Command:\n");
+    printf("Conditional Commands : %d :\n", c->pipno);
+    printf("***********************************************\n");
     for (int i = 0; i < c->pipno; i++)
     {
         print_pipeline(c->pipes[i]);
+        if (i < c->pipno - 1)
+        {
+            if (c->pipes[i]->state == 1)
+            {
+                printf(" || ");
+            }
+            else
+            {
+                printf(" && ");
+            }
+        }
+        printf("***********************************************\n");
     }
     printf("Background: %s\n", c->background ? "Yes" : "No");
 }

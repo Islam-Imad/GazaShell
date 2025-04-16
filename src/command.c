@@ -58,6 +58,7 @@ void free_command(struct command *cmd)
     for (int i = 0; i < cmd->argno; ++i)
     {
         free(cmd->args[i]);
+        cmd->args[i] = NULL;
     }
 }
 
@@ -84,16 +85,24 @@ int execute_command(struct command *cmd)
 
 void print_command(struct command *cmd)
 {
-    printf("Command: ");
+    printf("( Command: ");
     for (int i = 0; i < cmd->argno; ++i)
     {
         printf("%s ", cmd->args[i]);
     }
-    printf(" : ");
+    printf("  [");
     if (cmd->input != NULL)
-        printf("Input: %s - ", cmd->input);
+        printf("In: %s - ", cmd->input);
+    else
+        printf("In: NULL - ");
     if (cmd->output != NULL)
-        printf("Output: %s - ", cmd->output);
+        printf("Out: %s - ", cmd->output);
+    else
+        printf("Out: NULL - ");
     if (cmd->error != NULL)
-        printf("Error: %s - ", cmd->error);
+        printf("Er: %s ", cmd->error);
+    else
+        printf("Er: NULL ");
+
+    printf("] ) ");
 }

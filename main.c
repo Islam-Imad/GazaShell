@@ -2,11 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "symbols.h"
-#include "scanner.h"
-#include "command.h"
-#include "pipe.h"
-#include "conditional_cmd.h"
+#include "parser.h"
 
 char *read_line()
 {
@@ -88,5 +84,10 @@ void test_2()
 
 int main(int argc, char *argv[])
 {
-    test_2();
+    struct tokens *t = scanner(read_line());
+    print_tokens(t);
+    struct list *l = parser(t);
+    print_list(l);
+    free_list(l);
+    // free_tokens(t);
 }

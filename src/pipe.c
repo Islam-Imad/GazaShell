@@ -38,11 +38,14 @@ void free_pipeline(struct pipeline *p)
     for (int i = 0; i < p->comno; ++i)
     {
         free_command(p->cmd[i]);
+        free(p->cmd[i]);
+        p->cmd[i] = NULL;
     }
 }
 
 void print_pipeline(struct pipeline *p)
 {
+    printf("Pipeline : %d :\n", p->comno);
     for (int i = 0; i < p->comno; ++i)
     {
         print_command(p->cmd[i]);
