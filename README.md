@@ -1,32 +1,108 @@
-# **GazaShell**
+# GazaShell
 
-A Bugy implementation of a Unix-like shell in C++.
+GazaShell is a custom shell implementation written in C and C++. It provides a command-line interface for executing commands with support for input/output redirection, pipelines, and conditional execution.
 
----
+## Features
 
-## **Description**  
-GazaShell is a lightweight shell with support for essential features:  
+- **Command Processing**: Tokenizes and parses user input into executable commands
+- **Pipelines**: Connect multiple commands with pipes (`|`)
+- **Conditional Execution**: Support for `&&` and `||` operators
+- **I/O Redirection**: Handle input (`<`), output (`>`), and error (`2>`) redirection
+- **Built-in Commands**: Includes essential commands like `cd`, `pwd`, `path`, and `exit`
 
-1. **Running Commands:** Execute system commands directly.  
-2. **Directory Navigation:** Change the current directory using the `cd` command.  
-3. **I/O Redirection:** Redirect input and output of commands to/from files.  
-4. **Pipelines:** Run multiple commands connected by pipelines (`|`).  
-5. **Command History:** Execute the last command using the `!!` command.  
-6. **Execution Timing:** Measure the time taken by a command to execute.  
-7. **Path Display:** Show the last three directories in the current path.
+## Project Structure
 
----
+```
+.
+├── src/
+│   ├── builtin.c        # Built-in command implementations
+│   ├── command.c        # Command execution logic
+│   ├── conditional_cmd.c # Conditional command handling
+│   ├── list.c           # List data structure implementation
+│   ├── parser.c         # Command parsing module
+│   ├── path.c           # Path management
+│   ├── pipe.c           # Pipeline implementation
+│   ├── scanner.c        # Input tokenization
+│   ├── symbols.c        # Symbol handling
+│   ├── include/         # Header files
+│       ├── builtin.h
+│       ├── command.h
+│       ├── conditional_cmd.h
+│       ├── list.h
+│       ├── parser.h
+│       ├── path.h
+│       ├── pipe.h
+│       ├── scanner.h
+│       ├── symbols.h
+├── v0/
+│   ├── GazaShell.cpp    # Initial implementation
+├── main.c               # Main entry point
+├── README.md
+```
 
-## **Concepts Applied**  
+## Architecture
 
-- **System Calls:**  
-  - `fork()`, `execvp()`, `wait()`, `pipe()`, `dup2()`, `open()`, `close()`, `chdir()`  
+### Scanner
+Tokenizes user input by breaking it down into individual tokens using delimiters like spaces and tabs.
 
-- **File Descriptors:**  
-  - `STDIN_FILENO`, `STDOUT_FILENO`  
+### Parser
+Processes tokens into structured commands, handling operators for redirection, pipelines, and conditional execution.
 
-- **Error Handling:**  
-  - Use of `perror()` for error reporting.  
+### Execution Engine
+Manages command execution through system calls, implements I/O redirection, and handles exit statuses.
 
-- **Inter-Process Communication:**  
-  - Use of `pipe()` for managing command pipelines.  
+### Built-in Commands
+Native shell functions that don't spawn new processes, including:
+- `cd`: Change directory
+- `pwd`: Print working directory
+- `path`: Manage command search paths
+- `exit`: Terminate the shell
+
+## Building and Running
+
+1. **Build the project**:
+   ```bash
+   mkdir build
+   cd build
+   cmake ..
+   make
+   ```
+
+2. **Run GazaShell**:
+   ```bash
+   ./wish
+   ```
+
+## Usage Examples
+
+### Basic Commands
+```bash
+wish> ls -l
+wish> pwd
+```
+
+### Pipelines
+```bash
+wish> ls -l | grep ".c" | wc -l
+```
+
+### I/O Redirection
+```bash
+wish> ls > files.txt
+wish> cat < input.txt
+wish> find / -name "*.c" 2> errors.log
+```
+
+### Conditional Execution
+```bash
+wish> mkdir test && cd test || echo "Failed to create directory"
+```
+
+### Path Management
+```bash
+wish> path /bin /usr/bin /usr/local/bin
+```
+
+## Contributing
+
+Contributions are welcome! Feel free to submit issues or pull requests for bug fixes, enhancements, or new features.
