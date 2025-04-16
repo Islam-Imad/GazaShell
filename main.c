@@ -3,19 +3,78 @@
 #include <string.h>
 #include <unistd.h>
 #include "parser.h"
+// #include "builtin.h"
 
-char *read_line()
+char *read_line(FILE *file)
 {
     char *buffer = NULL;
     size_t len = 0;
     ssize_t read;
-    read = getline(&buffer, &len, stdin);
+    read = getline(&buffer, &len, file);
     if (read == -1)
     {
         perror("getline");
         return NULL;
     }
     return buffer;
+}
+
+int batch_mode(char *path)
+{
+    FILE *file = fopen(path, "r");
+    if (file == NULL)
+    {
+        perror("fopen");
+        return -1;
+    }
+    int status = 0;
+    char *line = read_line(file);
+    struct tokens *t = scanner(line);
+    struct list *l = parser(t);
+    execute_list(l);
+    while (line != NULL)
+    {
+        free(line);
+        line = read_line(file);
+        if (line == NULL)
+            break;
+        t = scanner(line);
+        l = parser(t);
+        if (execute_list(l) != 0)
+        {
+            status = -1;
+        }
+        free_list(l);
+        free_tokens(t);
+    }
+    free(line);
+    fclose(file);
+    return status;
+}
+
+int command_line_mood()
+{
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    while (1)
+    {
+        printf("Wish> ");
+        read = getline(&line, &len, stdin);
+        if (read == -1)
+        {
+            perror("getline");
+            break;
+        }
+        struct tokens *t = scanner(line);
+        struct list *l = parser(t);
+        // print_list(l);
+        execute_list(l);
+        free_list(l);
+        free_tokens(t);
+    }
+    free(line);
+    return 0;
 }
 
 void test_1()
@@ -84,11 +143,25 @@ void test_2()
 
 int main(int argc, char *argv[])
 {
-    struct tokens *t = scanner(read_line());
-    print_tokens(t);
-    struct list *l = parser(t);
-    print_list(l);
-    execute_list(l);
-    free_list(l);
+    // struct tokens *t = scanner(read_line());
+    // print_tokens(t);
+    // struct list *l = parser(t);
+    // print_list(l);
+    // execute_list(l);
+    // free_list(l);
     // free_tokens(t);
+    if (argc == 1)
+    {
+        command_line_mood();
+    }
+    else if (argc == 2)
+    {
+        batch_mode(argv[1]);
+    }
+    else
+    {
+        // error_message();
+        return -1;
+    }
+    return 0;
 }

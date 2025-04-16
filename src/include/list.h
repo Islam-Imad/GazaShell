@@ -3,6 +3,9 @@
 #include <unistd.h>
 #include <string.h>
 
+#ifndef LIST_H
+#define LIST_H
+
 #define MAX_CCMD 32
 
 struct list
@@ -22,3 +25,5 @@ void print_list(struct list *l);
 int parallel_execute(struct conditional_cmd *c);
 
 int execute_list(struct list *l);
+
+#endif

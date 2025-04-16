@@ -1,15 +1,8 @@
 #include <stdio.h>
 #include "command.h"
 
-const char *builtin_str[] = {
-    "cd",
-    "help",
-    "exit",
-    "path",
-    "pwd"
-};
-
-const int count_builtin = 4;
+#ifndef BUILTIN_H
+#define BUILTIN_H
 
 void error_message();
 
@@ -21,6 +14,8 @@ int excute_exit();
 
 int execute_help();
 
-int is_builtin(struct command *cmd);
+int check_builtin(struct command *cmd);
 
 int excute_builtin(struct command *cmd);
+
+#endif // BUILTIN_H

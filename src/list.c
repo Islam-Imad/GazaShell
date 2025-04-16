@@ -54,6 +54,10 @@ void print_list(struct list *l)
 // still we need to know the status of the conditional command
 int parallel_execute(struct conditional_cmd *c)
 {
+    if (c == NULL)
+    {
+        return 0;
+    }
     pid_t pid = fork();
     if (pid < 0)
     {
@@ -64,8 +68,9 @@ int parallel_execute(struct conditional_cmd *c)
     {
         // Child process
         // sleep(1);
-        int status = execute_conditional_cmd(c);
-        exit(status);
+        // printf("Executing command in background: ");
+        execute_conditional_cmd(c);
+        exit(0);
     }
     else
     {
@@ -77,21 +82,30 @@ int parallel_execute(struct conditional_cmd *c)
 
 int execute_list(struct list *l)
 {
+    if (l == NULL)
+    {
+        return 0;
+    }
     int status = 0;
+    // printf("%d\n", l->ccmdno);
     for (int i = 0; i < l->ccmdno; i++)
     {
+        // print_conditional_cmd(l->ccmds[i]);
         if (l->ccmds[i] == NULL)
             continue;
         if (l->ccmds[i]->background == 1)
         {
             parallel_execute(l->ccmds[i]);
-            continue;
         }
-        int cstatus = execute_conditional_cmd(l->ccmds[i]);
-        if (cstatus != 0)
+        else
         {
-            status = -1;
+            int cstatus = execute_conditional_cmd(l->ccmds[i]);
+            if (cstatus != 0)
+            {
+                status = -1;
+            }
         }
+        // break;
     }
     return status;
 }

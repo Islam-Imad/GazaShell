@@ -3,6 +3,9 @@
 #include <unistd.h>
 #include <string.h>
 
+#ifndef COMMAND_H
+#define COMMAND_H
+
 #define MAX_ARGS 256
 
 struct command
@@ -29,3 +32,5 @@ void free_command(struct command *cmd);
 int execute_command(struct command *cmd);
 
 void print_command(struct command *cmd);
+
+#endif // COMMAND_H

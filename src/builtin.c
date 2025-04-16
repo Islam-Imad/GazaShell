@@ -1,5 +1,16 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include "builtin.h"
+
+const char *builtin_str[] = {
+    "cd",
+    "help",
+    "exit",
+    "path",
+    "pwd"};
+
+const int count_builtin = 5;
 
 void error_message()
 {
@@ -42,7 +53,7 @@ int execute_help()
     return 0;
 }
 
-int is_builtin(struct command *cmd)
+int check_builtin(struct command *cmd)
 {
     for (int i = 0; i < count_builtin; i++)
     {

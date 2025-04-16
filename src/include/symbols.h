@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+#ifndef SYMBOLS_H
+#define SYMBOLS_H
+
 enum symbols
 {
     parallel, /* & */
@@ -20,3 +23,5 @@ enum symbols
 const char *seperator[] = {"&", ";"};
 
 int get_symbol(char *str);
+
+#endif // SYMBOLS_H

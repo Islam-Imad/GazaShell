@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef SCANNER_H
+#define SCANNER_H
+
 #define MAX_TOKENS 256
 
 struct tokens
@@ -19,3 +22,5 @@ void print_tokens(struct tokens *tokens);
 void free_tokens(struct tokens *tokens);
 
 struct tokens *scanner(char *source);
+
+#endif // SCANNER_H

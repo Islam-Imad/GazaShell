@@ -8,6 +8,9 @@
 #include "pipe.h"
 #include "conditional_cmd.h"
 
+#ifndef PARSER_H
+#define PARSER_H
+
 int match(char *cmp_a, char *cmp_b);
 
 int is_io(char *token);
@@ -29,3 +32,5 @@ struct pipeline *parse_pipeline(struct tokens *t, int *idx);
 struct command *parse_command(struct tokens *t, int *idx);
 
 void parse_io(struct tokens *t, int *idx,struct command *cmd);
+
+#endif // PARSER_H

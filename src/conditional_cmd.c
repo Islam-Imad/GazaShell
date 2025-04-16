@@ -68,6 +68,10 @@ void print_conditional_cmd(struct conditional_cmd *c)
 
 int execute_conditional_cmd(struct conditional_cmd *c)
 {
+    if (c == NULL)
+    {
+        return 0;
+    }
     int status = 0;
     for (int i = 0; i < c->pipno; i++)
     {

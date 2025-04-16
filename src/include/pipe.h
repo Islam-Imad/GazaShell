@@ -3,6 +3,9 @@
 #include <unistd.h>
 #include <string.h>
 
+#ifndef PIPE_H
+#define PIPE_H
+
 #define MAX_PIPE 32
 
 /*
@@ -28,3 +31,5 @@ void free_pipeline(struct pipeline *p);
 void print_pipeline(struct pipeline *p);
 
 int execute_pipeline(struct pipeline *p);
+
+#endif // PIPE_H

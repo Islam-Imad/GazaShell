@@ -4,6 +4,9 @@
 #include <string.h>
 // #include "pipe.h"
 
+#ifndef CONDITIONAL_CMD_H
+#define CONDITIONAL_CMD_H
+
 #define MAX_CMD 32
 
 struct conditional_cmd
@@ -24,3 +27,5 @@ void free_conditional_cmd(struct conditional_cmd *c);
 void print_conditional_cmd(struct conditional_cmd *c);
 
 int execute_conditional_cmd(struct conditional_cmd *c);
+
+#endif // CONDITIONAL_CMD_H

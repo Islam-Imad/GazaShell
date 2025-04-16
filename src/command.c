@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include "command.h"
+#include "builtin.h"
 
 void init_command(struct command *cmd)
 {
@@ -64,7 +65,15 @@ void free_command(struct command *cmd)
 
 int execute_command(struct command *cmd)
 {
+    if (cmd == NULL || cmd->argno == 0)
+    {
+        return 0;
+    }
     // you should create pipe here to know if your child process failed or not
+    if (check_builtin(cmd))
+    {
+        return excute_builtin(cmd);
+    }
     pid_t pid = fork();
     if (pid == -1)
     {

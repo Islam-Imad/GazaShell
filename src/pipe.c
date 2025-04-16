@@ -57,6 +57,10 @@ void print_pipeline(struct pipeline *p)
 
 int execute_pipeline(struct pipeline *p)
 {
+    if (p == NULL)
+    {
+        return 0;
+    }
     int gst = 0;
     if (p->comno == 0)
         return gst;
