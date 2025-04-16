@@ -63,6 +63,7 @@ int parallel_execute(struct conditional_cmd *c)
     else if (pid == 0)
     {
         // Child process
+        // sleep(1);
         int status = execute_conditional_cmd(c);
         exit(status);
     }
