@@ -53,9 +53,39 @@ void print_conditional_cmd(struct conditional_cmd *c)
 
 int execute_conditional_cmd(struct conditional_cmd *c)
 {
+    int status = 0;
     for (int i = 0; i < c->pipno; i++)
     {
-        execute_pipeline(c->pipes[i]);
+        int cstatus = execute_pipeline(c->pipes[i]);
+        status = cstatus;
+        if (cstatus == 0)
+        {
+            // success
+            if (c->pipes[i]->state == 1)
+            { // OR
+                break;
+            }
+            else
+            {
+                continue;
+            }
+        }
+        else
+        {
+            // failure
+            // skip any AND commands
+            while (i < c->pipno)
+            {
+                if (c->pipes[i]->state == 1)
+                {
+                    break;
+                }
+                else
+                {
+                    i++;
+                }
+            }
+        }
     }
-    return 0;
+    return status;
 }

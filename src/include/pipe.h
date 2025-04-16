@@ -7,8 +7,8 @@
 
 /*
     state:
-    0 : continue only if the this pipeline succeeds
-    1 : continue only if the this pipeline fails
+    0 : &&
+    1 : ||
 */
 struct pipeline
 {
