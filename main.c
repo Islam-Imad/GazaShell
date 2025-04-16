@@ -88,6 +88,7 @@ int main(int argc, char *argv[])
     print_tokens(t);
     struct list *l = parser(t);
     print_list(l);
+    execute_list(l);
     free_list(l);
     // free_tokens(t);
 }

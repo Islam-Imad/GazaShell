@@ -1,12 +1,29 @@
 #include <stdio.h>
 #include "builtin.h"
 
+void error_message()
+{
+    char error_message[30] = "An error has occurred\n";
+    write(STDERR_FILENO, error_message, strlen(error_message));
+}
+
+int execute_pwd()
+{
+    char *path = getcwd(NULL, 0);
+    if (path == NULL)
+    {
+        error_message();
+        return -1;
+    }
+    printf("%s\n", path);
+    free(path);
+}
+
 int execute_cd(char *path)
 {
     if (chdir(path) != 0)
     {
-        char error_message[30] = "An error has occurred\n";
-        write(STDERR_FILENO, error_message, strlen(error_message));
+        error_message();
         return -1;
     }
     return 0;
@@ -50,6 +67,10 @@ int excute_builtin(struct command *cmd)
     else if (strcmp(cmd->args[0], "help") == 0)
     {
         return execute_help();
+    }
+    else if (strcmp(cmd->args[0], "pwd") == 0)
+    {
+        return execute_pwd();
     }
     return -1;
 }

@@ -5,10 +5,15 @@ const char *builtin_str[] = {
     "cd",
     "help",
     "exit",
-    "path"
+    "path",
+    "pwd"
 };
 
 const int count_builtin = 4;
+
+void error_message();
+
+int execute_pwd();
 
 int execute_cd(char *path);
 
