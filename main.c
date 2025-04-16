@@ -86,8 +86,7 @@ void test_2()
     free_conditional_cmd(&cc);
 }
 
-int main(int argc, char *argv)
+int main(int argc, char *argv[])
 {
-    
     test_2();
 }

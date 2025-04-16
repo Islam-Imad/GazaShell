@@ -78,7 +78,7 @@ int execute_list(struct list *l)
             continue;
         if (l->ccmds[i]->background == 1)
         {
-            parallel_excute(l->ccmds[i]);
+            parallel_execute(l->ccmds[i]);
             continue;
         }
         int cstatus = execute_conditional_cmd(l->ccmds[i]);
