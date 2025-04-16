@@ -10,12 +10,12 @@ const char *builtin_str[] = {
 
 const int count_builtin = 4;
 
-void execute_cd(char *path);
+int execute_cd(char *path);
 
-void excute_exit();
+int excute_exit();
 
-void execute_help();
+int execute_help();
 
 int is_builtin(struct command *cmd);
 
-void excute_builtin(struct command *cmd);
+int excute_builtin(struct command *cmd);

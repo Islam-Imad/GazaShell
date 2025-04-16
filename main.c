@@ -22,13 +22,8 @@ char *read_line()
     return buffer;
 }
 
-int main(int argc, char *argv)
+void test_1()
 {
-    // char *source = read_line();
-    // struct tokens *t = scanner(source);
-    // print_tokens(t);
-    // free_tokens(t);
-    // free(source);
     struct command cmd;
     init_command(&cmd);
     insert_arg(&cmd, "cat");
@@ -61,13 +56,37 @@ int main(int argc, char *argv)
     print_conditional_cmd(&cc);
     execute_conditional_cmd(&cc);
     free_conditional_cmd(&cc);
-    // printf("%d\n", p.comno);
-    // print_pipeline(&p);
-    // execute_pipeline(&p);
-    // free_pipeline(&p);
-    // struct pipeline
+}
 
-    // execute_command(&cmd);
-    // print_command(&cmd);
-    // free_command(&cmd);
+void test_2()
+{
+    struct command cmd;
+    init_command(&cmd);
+    insert_arg(&cmd, "cat");
+    insert_arg(&cmd, "../input.txt");
+    struct command cmd2;
+    init_command(&cmd2);
+    insert_arg(&cmd2, "ls");
+    struct pipeline p;
+    init_pipline(&p);
+    insert_command(&p, &cmd);
+    set_state(&p, 1);
+    struct pipeline p2;
+    init_pipline(&p2);
+    insert_command(&p2, &cmd2);
+    set_state(&p2, 0);
+    // just continue if the last command fails
+    struct conditional_cmd cc;
+    init_ccmd(&cc);
+    insert_pipeline(&cc, &p);
+    insert_pipeline(&cc, &p2);
+    set_background(&cc, 1);
+    print_conditional_cmd(&cc);
+    execute_conditional_cmd(&cc);
+    free_conditional_cmd(&cc);
+}
+
+int main(int argc, char *argv)
+{
+    test_2();
 }

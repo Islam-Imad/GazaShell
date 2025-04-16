@@ -6,6 +6,7 @@ add_library(
     "builtin.c"
     "pipe.c"
     "conditional_cmd.c"
+    "list.c"
 )
 
 target_include_directories(shell_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
