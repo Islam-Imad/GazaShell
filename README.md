@@ -10,6 +10,10 @@ GazaShell is a custom shell implementation written in C and C++. It provides a c
 - **I/O Redirection**: Handle input (`<`), output (`>`), and error (`2>`) redirection
 - **Built-in Commands**: Includes essential commands like `cd`, `pwd`, `path`, and `exit`
 
+## Example Commands
+
+![Example Usage](example.png)
+
 ## Project Structure
 
 ```

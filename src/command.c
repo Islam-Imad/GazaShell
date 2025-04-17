@@ -104,7 +104,7 @@ int execute_command(struct command *cmd, struct path *p)
     {
         int child_status;
         waitpid(pid, &child_status, 0);
-        return WIFEXITED(child_status) ? 0 : -1;
+        return WEXITSTATUS(child_status);
     }
     return 0;
 }

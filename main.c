@@ -2,10 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <locale.h>
+#include <wchar.h>
 #include <math.h>
 #include "parser.h"
 #include "builtin.h"
 #include "path.h"
+
+#define BLACK_BLUE "\033[40;34m"
+#define BLUE_BLACK "\033[44;30m"
+#define GREEN_BLACK "\033[42;30m"
+#define BLACK_GREEN "\033[40;32m"
+#define GREEN_GREEN "\033[42;32m"
+#define RESET "\033[0m"
 
 int max(int a, int b)
 {
@@ -34,21 +43,29 @@ void prompt(int maxn)
     char prompt[len + 1];
     for (int i = 0; path[i] != '\0'; ++i)
     {
-        if (path[i] == '/' && rem > 0)
-        {
-            rem -= 1;
-        }
         if (rem == 0)
         {
             prompt[j] = path[i];
             j++;
         }
+        if (path[i] == '/' && rem > 0)
+        {
+            rem -= 1;
+        }
     }
+    printf("%s", BLUE_BLACK);
+    printf(" 🕊 Gaza");
+    printf("%s", BLACK_BLUE);
+    printf("\uE0B0");
+    printf("%s", GREEN_BLACK);
     prompt[j] = '\0';
-    write(STDOUT_FILENO, prompt, strlen(prompt));
-    write(STDOUT_FILENO, "> ", 2);
-    free(path);
+    printf("\uE0B0%s \uE0B1\uE0B1\uE0B1", prompt);
+    printf("%s", BLACK_GREEN);
+    printf("\uE0B0");
+    printf("%s", RESET);
+    printf(" ");
     fflush(stdout);
+    free(path);
 }
 
 char *read_line(FILE *file)

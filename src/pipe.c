@@ -56,7 +56,7 @@ void print_pipeline(struct pipeline *p)
     printf("\n");
 }
 
-int execute_pipeline(struct pipeline *p,struct path *p1)
+int execute_pipeline(struct pipeline *p, struct path *p1)
 {
     if (p == NULL)
     {
@@ -105,7 +105,7 @@ int execute_pipeline(struct pipeline *p,struct path *p1)
                 if (fd2[1] < -1)
                 {
                     error_message();
-                    gst = -1;
+                    gst = 1;
                     break;
                 }
                 dup2(fd2[1], STDOUT_FILENO);
@@ -123,7 +123,7 @@ int execute_pipeline(struct pipeline *p,struct path *p1)
         int st = execute_command(p->cmd[i], p1);
         if (st != 0)
         {
-            gst = -1;
+            gst = 1;
             break;
         }
         close(fd2[1]);
