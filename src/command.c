@@ -82,8 +82,7 @@ int execute_command(struct command *cmd, struct path *p)
     // you should create pipe here to know if your child process failed or not
     if (check_builtin(cmd))
     {
-        excute_builtin(cmd, p);
-        return 0;
+        return excute_builtin(cmd, p);
     }
     pid_t pid = fork();
     if (pid == -1)
@@ -99,14 +98,13 @@ int execute_command(struct command *cmd, struct path *p)
             execv(path, cmd->args);
         }
         error_message();
-        // printf("Command not found: %s\n", cmd->args[0]);
-        // // print the env path
-        // printf("%s\n", getenv("PATH"));
         exit(EXIT_FAILURE);
     }
     else
     {
-        waitpid(pid, NULL, 0);
+        int child_status;
+        waitpid(pid, &child_status, 0);
+        return WIFEXITED(child_status) ? 0 : -1;
     }
     return 0;
 }

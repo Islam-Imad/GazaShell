@@ -2,9 +2,54 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <math.h>
 #include "parser.h"
 #include "builtin.h"
 #include "path.h"
+
+int max(int a, int b)
+{
+    return (a > b) ? a : b;
+}
+
+void prompt(int maxn)
+{
+    char *path = getcwd(NULL, 0);
+    if (path == NULL)
+    {
+        error_message();
+        return;
+    }
+    int slahe = 0;
+    int len = 0;
+    int rem = 0;
+    int j = 0;
+    for (int i = 0; path[i] != '\0'; i++)
+    {
+        if (path[i] == '/')
+            slahe++;
+        len += 1;
+    }
+    rem = max(0, slahe - maxn);
+    char prompt[len + 1];
+    for (int i = 0; path[i] != '\0'; ++i)
+    {
+        if (path[i] == '/' && rem > 0)
+        {
+            rem -= 1;
+        }
+        if (rem == 0)
+        {
+            prompt[j] = path[i];
+            j++;
+        }
+    }
+    prompt[j] = '\0';
+    write(STDOUT_FILENO, prompt, strlen(prompt));
+    write(STDOUT_FILENO, "> ", 2);
+    free(path);
+    fflush(stdout);
+}
 
 char *read_line(FILE *file)
 {
@@ -73,7 +118,8 @@ int command_line_mood()
     insert_path(&p, "/usr/bin");
     while (1)
     {
-        printf("Wish> ");
+        // printf("Wish> ");
+        prompt(1);
         read = getline(&line, &len, stdin);
         if (read == -1)
         {
@@ -83,11 +129,12 @@ int command_line_mood()
         struct tokens *t = scanner(line);
         struct list *l = parser(t);
         execute_list(l, &p);
+
         free_list(l);
         free(t);
+        free(line);
+        line = NULL;
     }
-    print_path(&p);
-    free(line);
     return 0;
 }
 

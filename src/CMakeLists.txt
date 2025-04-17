@@ -1,6 +1,5 @@
 add_library(
     shell_lib
-    "symbols.c"
     "scanner.c"
     "command.c"
     "builtin.c"

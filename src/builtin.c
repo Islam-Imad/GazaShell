@@ -32,6 +32,17 @@ int is_file(char *path)
     return 0;
 }
 
+char *get_pwd()
+{
+    char *path = getcwd(NULL, 0);
+    if (path == NULL)
+    {
+        error_message();
+        return NULL;
+    }
+    return path;
+}
+
 int execute_pwd(struct command *cmd)
 {
     if (cmd->argno != 1)
@@ -39,14 +50,14 @@ int execute_pwd(struct command *cmd)
         error_message();
         return -1;
     }
-    char *path = getcwd(NULL, 0);
-    if (path == NULL)
+    char *path = get_pwd();
+    if (path != NULL)
     {
-        error_message();
-        return -1;
+        printf("%s\n", path);
+        free(path);
+        return 0;
     }
-    printf("%s\n", path);
-    free(path);
+    return -1;
 }
 
 int execute_cd(struct command *cmd)
@@ -64,14 +75,15 @@ int execute_cd(struct command *cmd)
     return 0;
 }
 
-void excute_exit(struct command *cmd)
+int excute_exit(struct command *cmd)
 {
     if (cmd->argno != 1)
     {
         error_message();
-        return;
+        return -1;
     }
     exit(EXIT_SUCCESS);
+    return 0;
 }
 
 int execute_help(struct command *cmd)
@@ -108,30 +120,31 @@ int check_builtin(struct command *cmd)
     return 0;
 }
 
-void excute_builtin(struct command *cmd, struct path *p)
+int excute_builtin(struct command *cmd, struct path *p)
 {
     if (strcmp(cmd->args[0], "cd") == 0)
     {
-        execute_cd(cmd);
+        return execute_cd(cmd);
     }
     else if (strcmp(cmd->args[0], "exit") == 0)
     {
-        excute_exit(cmd);
+        return excute_exit(cmd);
     }
     else if (strcmp(cmd->args[0], "help") == 0)
     {
-        execute_help(cmd);
+        return execute_help(cmd);
     }
     else if (strcmp(cmd->args[0], "pwd") == 0)
     {
-        execute_pwd(cmd);
+        return execute_pwd(cmd);
     }
     else if (strcmp(cmd->args[0], "path") == 0)
     {
-        execute_path(cmd, p);
+        return execute_path(cmd, p);
     }
     else
     {
         error_message();
     }
+    return -1;
 }
