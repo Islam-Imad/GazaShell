@@ -7,6 +7,8 @@ GazaShell is a custom shell implementation written in C and C++. It provides a c
 - **Command Processing**: Tokenizes and parses user input into executable commands
 - **Pipelines**: Connect multiple commands with pipes (`|`)
 - **Conditional Execution**: Support for `&&` and `||` operators
+- **Sequential Execution**: Execute commands in sequence with `;`
+- **Parallel Commands**: Run commands in Parallel using `&`
 - **I/O Redirection**: Handle input (`<`), output (`>`), and error (`2>`) redirection
 - **Built-in Commands**: Includes essential commands like `cd`, `pwd`, `path`, and `exit`
 
@@ -98,6 +100,24 @@ wish> find / -name "*.c" 2> errors.log
 ### Conditional Execution
 ```bash
 wish> mkdir test && cd test || echo "Failed to create directory"
+```
+
+### Parallel Commands
+```bash
+wish> echo a & echo b & echo c & echo d
+```
+
+
+### Sequential Execution
+```bash
+wish> echo "First command"; echo "Second command"
+```
+
+### Built-in Commands
+```bash
+wish> cd /path/to/directory
+wish> pwd
+wish> exit
 ```
 
 ### Path Management
