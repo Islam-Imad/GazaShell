@@ -23,7 +23,6 @@ GazaShell is a custom shell implementation written in C and C++. It provides a c
 │   ├── path.c           # Path management
 │   ├── pipe.c           # Pipeline implementation
 │   ├── scanner.c        # Input tokenization
-│   ├── symbols.c        # Symbol handling
 │   ├── include/         # Header files
 │       ├── builtin.h
 │       ├── command.h
@@ -33,7 +32,6 @@ GazaShell is a custom shell implementation written in C and C++. It provides a c
 │       ├── path.h
 │       ├── pipe.h
 │       ├── scanner.h
-│       ├── symbols.h
 ├── v0/
 │   ├── GazaShell.cpp    # Initial implementation
 ├── main.c               # Main entry point
